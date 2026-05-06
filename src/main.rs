@@ -40,8 +40,8 @@ const TCNT0 : *mut u8 = 0x46 as *mut u8; // TC0 count value register
 // 0.8 uS = 26 cycles
 // 0.4 uS = 13 cycles
 
-const PWM_VAL_0: u8 = 1; // ~0.4us high
-const PWM_VAL_1: u8 = 5; // ~0.8us high
+const PWM_VAL_0: u8 = 0; // ~0.4us high
+const PWM_VAL_1: u8 = 6; // ~0.8us high
 
 fn pin_off(pin : u8) {
     unsafe {
@@ -97,7 +97,7 @@ impl <const LED_COUNT : usize> WS2812B<LED_COUNT> {
             asm!("cli");
             write_volatile(PORTD, read_volatile(PORTD) & !PIN5);
             write_volatile(TCCR0A, read_volatile(TCCR0A) & !COM0B1_BIT);
-            write_volatile(OCR0A, 42); // TOP VALUE
+            write_volatile(OCR0A, 43); // TOP VALUE
 
             write_volatile(TCNT0, 0);
 
@@ -178,7 +178,10 @@ fn main() -> ! {
     let mut counter = 0;
     loop {
         let led : LED;
-        // leds.leds = [0; LEDS_COUNT];
+        leds.leds = [0; LEDS_COUNT];
+        // for i in 0..LEDS_COUNT {
+        //     leds.leds[i] = 0;
+        // }
         if counter < LEDS_COUNT {
             led = LED { r: 0b10, g: 0, b: 0 };
         }
@@ -196,7 +199,7 @@ fn main() -> ! {
 
 
         pin_toggle(PIN6);
-        delay_ms(50);
+        delay_ms(10);
 
         counter += 1;
     }
