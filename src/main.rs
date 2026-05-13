@@ -76,10 +76,7 @@ struct LED {
 
 impl Into<u32> for LED {
     fn into(self) -> u32 {
-        let value = ((self.g as u32) << 16) | ((self.r as u32) << 8) | (self.b as u32);
-        let mut value_rev = 0;
-
-        value
+        ((self.g as u32) << 16) | ((self.r as u32) << 8) | (self.b as u32)
     }
 }
 impl <const LED_COUNT : usize> WS2812B<LED_COUNT> {
@@ -103,14 +100,10 @@ impl <const LED_COUNT : usize> WS2812B<LED_COUNT> {
 
             write_volatile(TIFR0, TOV0_BIT); 
 
-            let arr_size = self.leds.len();
-            let mut i = 0;
-
-            
             write_volatile(TCCR0A, read_volatile(TCCR0A) | COM0B1_BIT);
             for i in 0..LED_COUNT {
                 let mut val = self.leds[i];
-                for j in 0..24 {
+                for _ in 0..24 {
                     let pwm_val = (val & 0b10000000000000000000000 != 0) as usize;
                     val <<= 1;
                     
