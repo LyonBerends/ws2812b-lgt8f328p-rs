@@ -1,9 +1,9 @@
 use crate::ws2812b::{LED, WS2812B};
 
 pub fn animation_one<const LEDS_COUNT : usize>(counter: &mut usize, leds: &mut WS2812B<LEDS_COUNT>, segment_size : usize) {
-    leds.leds = [0; LEDS_COUNT];
+    leds.clear();
 
-    for i in 0..leds.leds.len() {
+    for i in 0..leds.leds_len() {
         let j = i % segment_size;
 
         let mut distance = (j as i32) - (segment_size as i32) / 2;
@@ -33,6 +33,29 @@ pub fn animation_one<const LEDS_COUNT : usize>(counter: &mut usize, leds: &mut W
             };
         }
 
+        leds.set_led(i, led.into());
+    }
+}
+
+static mut trigger : bool = false;
+pub fn animation_two<const LEDS_COUNT : usize>(counter: &mut usize, leds: &mut WS2812B<LEDS_COUNT>, segment_size : usize) {
+    leds.clear();
+
+    if *counter % leds.leds_len() == 0 {
+        unsafe {
+        trigger = !trigger;
+        }
+    }
+
+    let index_map : [usize; LEDS_COUNT] = [0; LEDS_COUNT];
+
+    for i in 0..=(*counter % (leds.leds_len())) {
+        let led : LED = 
+        if unsafe {trigger} {
+            LED { r: 100, g: 0, b: 0 }
+        } else {
+            LED { r: 0, g: 100, b: 0 }
+        };
         leds.set_led(i, led.into());
     }
 }

@@ -8,7 +8,7 @@ use core::{
 
 use arduino_hal::{delay_ms};
 use panic_halt as _;
-use ws2812b::{animations::animation_one, lgt8f328p::{pin_toggle, registers::{self, PIN6}}, ws2812b::{WS2812B}};
+use ws2812b::{animations::{animation_one, animation_two}, lgt8f328p::{pin_toggle, registers::{self, PIN6}}, ws2812b::WS2812B};
 
 fn setup_gpio() {
     unsafe {
@@ -31,7 +31,7 @@ fn setup_gpio() {
 
 
 const SEGMENT_SIZE: usize = 8;
-const LEDS_COUNT: usize = 64;
+pub const LEDS_COUNT: usize = 64;
 
 #[arduino_hal::entry]
 fn main() -> ! {
@@ -42,12 +42,12 @@ fn main() -> ! {
     let mut leds = WS2812B::<LEDS_COUNT>::new();
 
     loop {
-        animation_one(&mut counter, &mut leds, SEGMENT_SIZE);
+        animation_two(&mut counter, &mut leds, SEGMENT_SIZE);
         leds.update();
         leds.reset();
 
         pin_toggle(PIN6);
-        delay_ms(10);
+        delay_ms(20);
 
         counter += 1;
     }

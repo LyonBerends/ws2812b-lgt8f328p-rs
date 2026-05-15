@@ -21,7 +21,7 @@ impl Into<u32> for LED {
 
 
 pub struct WS2812B<const LED_COUNT: usize> {
-    pub leds: [u32; LED_COUNT],
+    leds: [u32; LED_COUNT],
 }
 
 impl<const LED_COUNT: usize> WS2812B<LED_COUNT> {
@@ -76,5 +76,13 @@ impl<const LED_COUNT: usize> WS2812B<LED_COUNT> {
             write_volatile(PORTD, portd & !PIN5);
         }
         delay_us(80);
+    }
+
+    pub fn clear(&mut self) {
+        self.leds = [0; LED_COUNT];
+    }
+
+    pub fn leds_len(&self) -> usize {
+        self.leds.len()
     }
 }
