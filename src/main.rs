@@ -8,11 +8,12 @@ use core::{
 
 use arduino_hal::{delay_ms};
 use panic_halt as _;
-use ws2812b::{animations::{animation_one, animation_two}, lgt8f328p::{pin_toggle, registers::{self, PIN6}}, ws2812b::WS2812B};
+use ws2812b::{animations::{animation_one, animation_three, animation_two}, lgt8f328p::{pin_read, pin_toggle, registers::{self, PIN6}}, ws2812b::WS2812B};
 
 fn setup_gpio() {
     unsafe {
         let mut ddrd_val = read_volatile(registers::DDRD);
+        ddrd_val = ddrd_val & !registers::PIN7;
         ddrd_val |= registers::PIN6;
         ddrd_val |= registers::PIN5;
         write_volatile(registers::DDRD, ddrd_val);
@@ -42,13 +43,18 @@ fn main() -> ! {
     let mut leds = WS2812B::<LEDS_COUNT>::new();
 
     loop {
-        animation_two(&mut counter, &mut leds, SEGMENT_SIZE);
+        let o = pin_read(registers::PIN7);
+        if o {
+            animation_three(&mut counter, &mut leds);
+        } else {
+            leds.clear();
+        }
         leds.update();
         leds.reset();
 
         pin_toggle(PIN6);
-        delay_ms(20);
+        delay_ms(10);
 
-        counter += 1;
+        counter = counter % 20 + 1;
     }
 }

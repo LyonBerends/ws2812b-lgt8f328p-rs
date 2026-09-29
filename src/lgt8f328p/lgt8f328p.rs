@@ -24,3 +24,10 @@ pub fn pin_on(pin: u8) {
         write_volatile(PORTD, portd_val | pin);
     }
 }
+
+pub fn pin_read(pin: u8) -> bool {
+    unsafe {
+        let pind_val = read_volatile(PIND);
+        (pind_val & pin) > 0
+    }
+}
