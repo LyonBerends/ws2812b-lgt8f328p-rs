@@ -60,12 +60,14 @@ pub fn animation_two<const LEDS_COUNT : usize>(counter: &mut usize, leds: &mut W
     }
 }
 
-pub fn animation_three<const LEDS_COUNT : usize>(counter: &mut usize, leds: &mut WS2812B<LEDS_COUNT>) {
+pub fn animation_three<const LEDS_COUNT : usize>(leds: &mut WS2812B<LEDS_COUNT>, r : bool, g : bool, b : bool, brightness : u8) {
     leds.clear();
 
     for i in 0..leds.leds_len() {
-        let brightness = *counter as u8;
-        let rgb = LED {r: 0, g: brightness, b: brightness};
+        let r = if r {1 * brightness} else {0};
+        let g = if g {1 * brightness} else {0};
+        let b = if b {1 * brightness} else {0};
+        let rgb = LED {r, g, b};
         leds.set_led(i, rgb.into());
     }
 }

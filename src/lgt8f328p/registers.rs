@@ -12,6 +12,9 @@
     pub const TCCR0B: *mut u8 = 0x45 as *mut u8; // TC0 CONTROL REGISTER B
     pub const WGM02_BIT: u8 = 1 << 3;
     pub const OCR0B: *mut u8 = 0x48 as *mut u8; // TC0 Output compare register B
+    pub const PIN2: u8 = 1 << 2;
+    pub const PIN3: u8 = 1 << 3;
+    pub const PIN4: u8 = 1 << 4;
     pub const PIN5: u8 = 1 << 5;
     pub const PIN6: u8 = 1 << 6;
     pub const PIN7: u8 = 1 << 7;
